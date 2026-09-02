@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nadirah &amp; Ibrahim</title>
+  <meta name="description" content="Digital wedding invitation for Nadirah and Ibrahim, 5 December 2026, Ampang, Kuala Lumpur.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Pinyon+Script&display=swap">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="wrap">
+  <div class="card">
+
+    <div class="langbar">
+      <div>
+        <button type="button" id="lang-en" aria-pressed="true">EN</button>
+        <button type="button" id="lang-ms" aria-pressed="false">BM</button>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-band">
+        <img src="assets/hydrangea-top.png" alt="Watercolour hydrangea swag">
+      </div>
+      <div class="hero-body">
+        <div class="frame cameo">
+          <div class="frame-inner">
+            <img src="assets/cake-detail.png" alt="Blue hydrangea and rose detail on the wedding cake">
+          </div>
+        </div>
+
+        <div class="kicker" data-t="kicker">You are hereby invited to the wedding of</div>
+
+        <div class="rule rule-hero">
+          <div class="bar"></div><div class="diamond"></div><div class="bar"></div>
+        </div>
+
+        <div class="names">Nadirah</div>
+        <div class="amp">&amp;</div>
+        <div class="names">Ibrahim</div>
+
+        <div class="date-long" data-t="dateLong">Saturday, 5 December 2026</div>
+        <div class="time-place">7:00 PM &middot; Ampang, Kuala Lumpur</div>
+      </div>
+    </section>
+
+    <!-- COUNTDOWN -->
+    <section class="countdown" data-reveal>
+      <div class="cd-label" data-t="countdown">Counting down</div>
+      <div class="cd-grid">
+        <div class="cd-cell"><div class="cd-num" id="cd-d">00</div><div class="cd-unit" data-t="days">Days</div></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-h">00</div><div class="cd-unit" data-t="hours">Hrs</div></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-m">00</div><div class="cd-unit" data-t="minutes">Min</div></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-s">00</div><div class="cd-unit" data-t="seconds">Sec</div></div>
+      </div>
+    </section>
+
+    <!-- INVITATION -->
+    <section class="invite" data-reveal>
+      <p class="lead" data-t="invite">With hearts full of joy, we invite you to share in the beginning of our forever.</p>
+      <p class="sub" data-t="inviteSub">Your presence is the greatest gift we could ask for &mdash; come eat, dance, and celebrate with us.</p>
+    </section>
+
+    <!-- PORTRAIT -->
+    <section class="portrait" data-reveal>
+      <div class="frame">
+        <div class="frame-inner">
+          <div class="monogram">N&amp;I</div>
+          <div class="monogram-sub">Nadirah &amp; Ibrahim</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCHEDULE -->
+    <section class="schedule" data-reveal>
+      <div class="sched-head">
+        <div class="eyebrow" data-t="scheduleKicker">The evening</div>
+        <div class="sched-title" data-t="scheduleTitle">Order of the Day</div>
+      </div>
+      <div id="sched-list"></div>
+    </section>
+
+    <!-- VENUE -->
+    <section class="venue" data-reveal>
+      <div class="eyebrow" data-t="venueKicker">Where</div>
+      <div class="venue-name">Nakhoda Three Empire<br>Wedding &amp; Event Hall</div>
+      <div class="rule">
+        <div class="bar"></div><div class="diamond"></div><div class="bar"></div>
+      </div>
+      <p class="venue-addr">D'Rapport Residences, 3A Jalan Nipah,<br>Off Jalan Ampang, 55000 Ampang,<br>Wilayah Persekutuan Kuala Lumpur</p>
+      <div class="venue-actions">
+        <a class="btn-solid" target="_blank" rel="noopener"
+           href="https://www.google.com/maps/search/?api=1&amp;query=Nakhoda+Three+Empire+Wedding+%26+Event+Hall+D%27Rapport+Residences+Jalan+Nipah+Ampang+Kuala+Lumpur"
+           data-t="mapBtn">Open in Google Maps</a>
+        <a class="btn-outline" target="_blank" rel="noopener"
+           href="https://waze.com/ul?q=Nakhoda%20Three%20Empire%20Wedding%20%26%20Event%20Hall%20Ampang"
+           data-t="wazeBtn">Navigate with Waze</a>
+      </div>
+    </section>
+
+    <!-- RSVP -->
+    <section class="rsvp" data-reveal>
+      <div class="rsvp-head">
+        <div class="eyebrow" data-t="rsvpKicker">Kindly reply</div>
+        <div class="rsvp-title" data-t="rsvpTitle">Will you join us?</div>
+        <p class="rsvp-note" data-t="rsvpNote">Please let us know by 20 November 2026.</p>
+      </div>
+
+      <div id="rsvp-thanks" class="thanks frame hidden">
+        <div class="frame-inner">
+          <div class="diamond"></div>
+          <div class="thanks-title" data-t="thanksTitle">Thank you</div>
+          <p class="thanks-body" data-t="thanksBody">Your reply has been received. We can't wait to see you.</p>
+        </div>
+      </div>
+
+      <form id="rsvp-form" class="form">
+        <label class="field">
+          <span data-t="fName">Your name</span>
+          <input id="f-name" type="text" autocomplete="name" data-t-ph="phName" placeholder="Full name">
+        </label>
+
+        <div class="field attend">
+          <span data-t="fAttend">Will you attend?</span>
+          <div class="choice-grid">
+            <button type="button" class="choice" id="f-yes" aria-pressed="false" data-t="yes">Joyfully yes</button>
+            <button type="button" class="choice" id="f-no" aria-pressed="false" data-t="no">Sadly no</button>
+          </div>
+        </div>
+
+        <label class="field">
+          <span data-t="fGuests">Number of guests</span>
+          <select id="f-guests">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span data-t="fWish">A wish for us (optional)</span>
+          <input id="f-wish" type="text" data-t-ph="phWish" placeholder="Write a short note">
+        </label>
+
+        <button type="submit" class="submit" id="f-submit" disabled data-t="send">Send reply</button>
+      </form>
+    </section>
+
+    <!-- FOOTER -->
+    <section>
+      <div class="foot-band">
+        <img src="assets/hydrangea-bottom.png" alt="Watercolour hydrangea bouquet">
+        <div class="foot-fade"></div>
+      </div>
+      <div class="foot-body">
+        <div class="foot-sig" data-t="footer">With love, Nadirah &amp; Ibrahim</div>
+        <div class="foot-meta">Nadirah &amp; Ibrahim &middot; 05.12.2026</div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
