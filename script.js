@@ -76,7 +76,7 @@ var TARGET = new Date("2026-12-05T19:00:00+08:00").getTime();
 // Published Google Sheet CSV of guest wishes
 // (Google Sheets → File → Share → Publish to web → the RSVP sheet → CSV).
 // Leave "" to keep the wishes section hidden.
-var WISHES_CSV = "";
+var WISHES_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaBgiPn82Y_laejF0Q01LrDsZL5yS5b2Uz7G5nFfIE0sjFGvBs2Vgrnd5hV5Ex4KVOlO6m_aoXlWBl/pub?output=csv";
 
 // Column headers in the published sheet (case-insensitive match; falls back to
 // these positions if a header is renamed).
