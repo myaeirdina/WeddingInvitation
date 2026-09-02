@@ -108,6 +108,8 @@ section { position: relative; }
 .field > span { display: block; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 17px; color: var(--label); margin-bottom: 3px; }
 .field.attend > span { margin-bottom: 8px; }
 .field input, .field select { width: 100%; border: 0; border-bottom: 1px solid var(--field-line); background: transparent; padding: 9px 2px; font-size: 15px; color: var(--navy-deep); font-family: 'Barlow', sans-serif; }
+.field-off { opacity: .38; }
+.field select:disabled { cursor: not-allowed; border-bottom-style: dashed; color: var(--muted-soft); }
 .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .choice { padding: 13px 8px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 18px; letter-spacing: .05em; border: 1px solid var(--line-warm); background: transparent; color: #5a6a85; transition: background .25s, border-color .25s, color .25s; }
 .choice[aria-pressed="true"] { border-color: var(--navy); background: var(--navy); color: #f6f8fc; }

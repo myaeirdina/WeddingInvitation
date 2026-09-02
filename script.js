@@ -87,6 +87,16 @@ var WISHES_TEXT_FALLBACK = 4;
 
 var WISHES_MAX = 30;
 
+// Google Form the RSVP writes to (the same form that feeds the wishes sheet).
+// entry.* IDs come from the form's FB_PUBLIC_LOAD_DATA_.
+var RSVP_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSfXLFhTfwiJSHoRm77XYOW0ZfdyNVU6vOCEfyl9-wC3JK4WoQ/formResponse";
+var RSVP_ENTRY = {
+  name:   "entry.1406225363",
+  attend: "entry.98086365",    // multiple choice: "Yes" / "No"
+  guests: "entry.1206663146",
+  wish:   "entry.1397502795"
+};
+
 var state = { lang: "en", attend: "" };
 
 function pad(n) { return String(n).padStart(2, "0"); }
@@ -142,6 +152,13 @@ function pickAttend(val) {
   state.attend = val;
   document.getElementById("f-yes").setAttribute("aria-pressed", String(val === "yes"));
   document.getElementById("f-no").setAttribute("aria-pressed", String(val === "no"));
+
+  // No headcount needed when they aren't coming — lock the guests field.
+  var guests = document.getElementById("f-guests");
+  var notComing = val === "no";
+  guests.disabled = notComing;
+  guests.closest(".field").classList.toggle("field-off", notComing);
+
   refreshSubmit();
 }
 
@@ -153,19 +170,28 @@ document.getElementById("f-no").addEventListener("click", function () { pickAtte
 
 document.getElementById("rsvp-form").addEventListener("submit", function (e) {
   e.preventDefault();
-  if (document.getElementById("f-submit").disabled) return;
+  var submit = document.getElementById("f-submit");
+  if (submit.disabled) return;
 
-  // No backend — this is a static site. Log the reply so it can be wired
-  // to a form service (Formspree, Google Forms, etc.) later if needed.
-  console.log("RSVP", {
-    name: document.getElementById("f-name").value.trim(),
-    attend: state.attend,
-    guests: document.getElementById("f-guests").value,
-    wish: document.getElementById("f-wish").value.trim()
-  });
+  var coming = state.attend === "yes";
 
-  document.getElementById("rsvp-form").classList.add("hidden");
-  document.getElementById("rsvp-thanks").classList.remove("hidden");
+  var body = new URLSearchParams();
+  body.set(RSVP_ENTRY.name, document.getElementById("f-name").value.trim());
+  body.set(RSVP_ENTRY.attend, coming ? "Yes" : "No");
+  body.set(RSVP_ENTRY.guests, coming ? document.getElementById("f-guests").value : "");
+  body.set(RSVP_ENTRY.wish, document.getElementById("f-wish").value.trim());
+
+  submit.disabled = true;
+
+  function done() {
+    document.getElementById("rsvp-form").classList.add("hidden");
+    document.getElementById("rsvp-thanks").classList.remove("hidden");
+  }
+
+  // Google Forms doesn't send CORS headers — fire it off no-cors (the response
+  // is opaque, but the submission is recorded) and thank the guest either way.
+  fetch(RSVP_ACTION, { method: "POST", mode: "no-cors", body: body })
+    .then(done, done);
 });
 
 /* ---- Guest wishes ------------------------------------------------------- */
