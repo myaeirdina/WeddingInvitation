@@ -120,6 +120,15 @@ section { position: relative; }
 .thanks-body { font-size: 13px; color: #5a6a85; margin: 10px 0 0; line-height: 1.7; }
 .hidden { display: none; }
 
+.wishes { padding: 12px 34px 46px; }
+.wishes-head { text-align: center; margin-bottom: 24px; }
+.wishes-title { font-family: 'Pinyon Script', cursive; font-size: 36px; color: var(--navy); margin-top: 6px; }
+.wishes-loading { text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; color: var(--sage); padding: 8px 0 4px; }
+.wishes-list { display: flex; flex-direction: column; gap: 14px; }
+.wish-card { border: 1px solid var(--line-warm); background: var(--panel-blue); padding: 20px 22px; }
+.wish-text { font-family: 'Cormorant Garamond', serif; font-size: 16.5px; line-height: 1.7; color: var(--navy); text-wrap: pretty; white-space: pre-line; }
+.wish-name { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--label); margin-top: 12px; }
+
 .foot-band { position: relative; height: 170px; overflow: hidden; }
 .foot-band img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .foot-fade { position: absolute; left: 0; right: 0; top: 0; height: 44px; background: linear-gradient(180deg, var(--card), rgba(251, 249, 243, 0)); pointer-events: none; }

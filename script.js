@@ -22,6 +22,9 @@ var COPY = {
     yes: "Joyfully yes", no: "Sadly no", send: "Send reply",
     thanksTitle: "Thank you",
     thanksBody: "Your reply has been received. We can't wait to see you.",
+    wishesKicker: "From loved ones",
+    wishesTitle: "Wishes for us",
+    wishesLoading: "Gathering wishes…",
     footer: "With love, Nadirah & Ibrahim",
     schedule: [
       { time: "7:00", title: "Guest arrival", note: "Doors open. Welcome drinks in the foyer." },
@@ -52,6 +55,9 @@ var COPY = {
     yes: "Ya, insyaAllah", no: "Maaf, tidak dapat", send: "Hantar jawapan",
     thanksTitle: "Terima kasih",
     thanksBody: "Jawapan anda telah diterima. Kami menantikan kehadiran anda.",
+    wishesKicker: "Daripada yang tersayang",
+    wishesTitle: "Ucapan untuk kami",
+    wishesLoading: "Mengumpul ucapan…",
     footer: "Ikhlas, Nadirah & Ibrahim",
     schedule: [
       { time: "7:00", title: "Ketibaan tetamu", note: "Pintu dibuka. Minuman selamat datang di foyer." },
@@ -66,6 +72,20 @@ var COPY = {
 
 // Wedding date & time — 5 December 2026, 7:00 PM, Malaysia time (UTC+8).
 var TARGET = new Date("2026-12-05T19:00:00+08:00").getTime();
+
+// Published Google Sheet CSV of guest wishes
+// (Google Sheets → File → Share → Publish to web → the RSVP sheet → CSV).
+// Leave "" to keep the wishes section hidden.
+var WISHES_CSV = "";
+
+// Column headers in the published sheet (case-insensitive match; falls back to
+// these positions if a header is renamed).
+var WISHES_NAME_HEADER = "your name";
+var WISHES_TEXT_HEADER = "a wish for us";
+var WISHES_NAME_FALLBACK = 1;
+var WISHES_TEXT_FALLBACK = 4;
+
+var WISHES_MAX = 30;
 
 var state = { lang: "en", attend: "" };
 
@@ -148,6 +168,110 @@ document.getElementById("rsvp-form").addEventListener("submit", function (e) {
   document.getElementById("rsvp-thanks").classList.remove("hidden");
 });
 
+/* ---- Guest wishes ------------------------------------------------------- */
+
+// RFC 4180-style CSV parser: handles quoted fields containing commas,
+// newlines and "" escaped quotes. Returns an array of string arrays.
+function parseCSV(text) {
+  var rows = [];
+  var row = [];
+  var field = "";
+  var inQuotes = false;
+
+  for (var i = 0; i < text.length; i++) {
+    var c = text[i];
+
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }   // escaped quote
+        else { inQuotes = false; }
+      } else {
+        field += c;
+      }
+      continue;
+    }
+
+    if (c === '"') { inQuotes = true; }
+    else if (c === ",") { row.push(field); field = ""; }
+    else if (c === "\r") { /* ignore, handle on \n */ }
+    else if (c === "\n") { row.push(field); rows.push(row); row = []; field = ""; }
+    else { field += c; }
+  }
+  // Trailing field / row when the file doesn't end with a newline.
+  if (field !== "" || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+function initWishes() {
+  if (!WISHES_CSV) return;
+
+  var section = document.getElementById("wishes");
+  var loading = document.getElementById("wishes-loading");
+  var list = document.getElementById("wishes-list");
+
+  // Show the section (with its loading state) while we fetch.
+  section.classList.remove("hidden");
+
+  // Cache-bust — Google serves published CSVs with a long cache.
+  var url = WISHES_CSV + (WISHES_CSV.indexOf("?") === -1 ? "?" : "&") + "t=" + Date.now();
+
+  fetch(url)
+    .then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.text();
+    })
+    .then(function (text) {
+      var rows = parseCSV(text);
+      if (rows.length < 2) { section.classList.add("hidden"); return; }
+
+      var header = rows.shift().map(function (h) { return String(h).trim().toLowerCase(); });
+      var nameIdx = header.indexOf(WISHES_NAME_HEADER);
+      var textIdx = header.indexOf(WISHES_TEXT_HEADER);
+      if (nameIdx === -1) nameIdx = WISHES_NAME_FALLBACK;
+      if (textIdx === -1) textIdx = WISHES_TEXT_FALLBACK;
+
+      var wishes = [];
+      for (var i = 0; i < rows.length; i++) {
+        var wish = (rows[i][textIdx] || "").trim();
+        if (!wish) continue;                          // skip empty / whitespace-only
+        wishes.push({ wish: wish, name: (rows[i][nameIdx] || "").trim() });
+      }
+
+      if (!wishes.length) { section.classList.add("hidden"); return; }
+
+      // Form responses are appended in submission order, so newest is last.
+      wishes.reverse();
+      wishes = wishes.slice(0, WISHES_MAX);
+
+      var frag = document.createDocumentFragment();
+      wishes.forEach(function (w) {
+        var card = document.createElement("div");
+        card.className = "wish-card";
+
+        var body = document.createElement("p");
+        body.className = "wish-text";
+        body.textContent = w.wish;                    // textContent — no HTML from guests
+        card.appendChild(body);
+
+        if (w.name) {
+          var who = document.createElement("div");
+          who.className = "wish-name";
+          who.textContent = w.name;
+          card.appendChild(who);
+        }
+        frag.appendChild(card);
+      });
+
+      list.textContent = "";
+      list.appendChild(frag);
+      loading.classList.add("hidden");
+    })
+    .catch(function () {
+      // Decorative section — fail silently.
+      section.classList.add("hidden");
+    });
+}
+
 // Scroll-reveal
 var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 if (reduce) {
@@ -164,3 +288,4 @@ if (reduce) {
 applyLang();
 tick();
 setInterval(tick, 1000);
+initWishes();
