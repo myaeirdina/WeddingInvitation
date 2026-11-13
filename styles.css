@@ -85,6 +85,8 @@ section { position: relative; }
 .sched-row { display: grid; grid-template-columns: 74px 1fr; gap: 16px; padding: 17px 0; border-top: 1px solid var(--line-warm-soft); }
 .sched-time { font-family: 'Cormorant Garamond', serif; font-size: 19px; color: var(--navy); letter-spacing: .03em; }
 .sched-name { font-size: 13.5px; font-weight: 500; color: var(--navy-deep); letter-spacing: .03em; }
+.sched-follow { padding: 12px 0; }
+.sched-dot { display: inline-block; width: 5px; height: 5px; margin-left: 4px; background: var(--sage); transform: rotate(45deg); vertical-align: middle; }
 .sched-note { font-size: 12.5px; color: var(--muted-soft); margin-top: 4px; line-height: 1.6; }
 
 .venue { background: var(--panel-blue); padding: 42px 34px 44px; text-align: center; border-top: 1px solid #e2e9f4; border-bottom: 1px solid #e2e9f4; }

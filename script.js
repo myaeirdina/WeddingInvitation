@@ -1,13 +1,13 @@
 /* Ibrahim & Nadirah — jemputan walimatulurus digital
    Vanilla JS: countdown, schedule render, RSVP form, guest wishes, scroll reveal. */
 
+// Rows without a time follow on from the previous item (s/s).
 var SCHEDULE = [
-  { time: "7:00", title: "Ketibaan tetamu", note: "Pintu dibuka. Minuman selamat datang di foyer." },
-  { time: "7:30", title: "Ketibaan pengantin", note: "Sila duduk untuk istiadat perarakan." },
-  { time: "8:00", title: "Jamuan makan malam", note: "Bufet dibuka mengikut meja." },
-  { time: "9:00", title: "Ucapan & potong kek", note: "Ucapan daripada kedua-dua keluarga." },
-  { time: "9:30", title: "Sesi bergambar", note: "Keluarga dan sahabat di pentas." },
-  { time: "11:00", title: "Majlis berakhir", note: "Terima kasih kerana meraikan bersama kami." }
+  { time: "7:00", title: "Ketibaan tetamu" },
+  { time: "~8:00", title: "Perarakan pengantin" },
+  { time: "~8:30", title: "Bacaan doa" },
+  { time: "~9:30", title: "Sesi bergambar" },
+  { time: "~11:00", title: "Majlis bersurai" }
 ];
 
 // Wedding date & time — 5 December 2026, 7:00 PM, Malaysia time (UTC+8).
@@ -45,10 +45,12 @@ function renderSchedule() {
   var rows = SCHEDULE;
   var html = "";
   for (var i = 0; i < rows.length; i++) {
-    html += '<div class="sched-row">'
-      + '<div class="sched-time">' + rows[i].time + '</div>'
-      + '<div><div class="sched-name">' + rows[i].title + '</div>'
-      + '<div class="sched-note">' + rows[i].note + '</div></div></div>';
+    var r = rows[i];
+    html += '<div class="sched-row' + (r.time ? '' : ' sched-follow') + '">'
+      + '<div class="sched-time">' + (r.time || '<span class="sched-dot"></span>') + '</div>'
+      + '<div><div class="sched-name">' + r.title + '</div>'
+      + (r.note ? '<div class="sched-note">' + r.note + '</div>' : '')
+      + '</div></div>';
   }
   document.getElementById("sched-list").innerHTML = html;
 }
