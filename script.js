@@ -103,7 +103,11 @@ document.getElementById("rsvp-form").addEventListener("submit", function (e) {
 
   submit.disabled = true;
 
+  var guestName = document.getElementById("f-name").value.trim();
+  var guestWish = document.getElementById("f-wish").value.trim();
+
   function done() {
+    addPendingWish(guestName, guestWish);
     document.getElementById("rsvp-form").classList.add("hidden");
     document.getElementById("rsvp-thanks").classList.remove("hidden");
   }
@@ -148,27 +152,84 @@ function parseCSV(text) {
   return rows;
 }
 
-function initWishes() {
-  if (!WISHES_CSV) return;
+// How often to re-check the sheet while the page is open. Google only
+// republishes the CSV every ~5 minutes, so polling faster gains nothing.
+var WISHES_POLL_MS = 60 * 1000;
 
+// Wishes this guest just sent. They show immediately and stay until the
+// published sheet catches up (kept in localStorage so a reload keeps them).
+var PENDING_KEY = "pendingWishes";
+var wishesFeed = [];
+var pendingWishes = loadPending();
+
+function loadPending() {
+  try { return JSON.parse(localStorage.getItem(PENDING_KEY)) || []; } catch (e) { return []; }
+}
+function savePending() {
+  try { localStorage.setItem(PENDING_KEY, JSON.stringify(pendingWishes)); } catch (e) {}
+}
+function sameWish(a, b) {
+  return a.wish === b.wish && a.name.toLowerCase() === b.name.toLowerCase();
+}
+
+function addPendingWish(name, wish) {
+  if (!WISHES_CSV || !wish) return;
+  pendingWishes.push({ name: name, wish: wish, at: Date.now() });
+  savePending();
+  renderWishes();
+}
+
+function renderWishes() {
   var section = document.getElementById("wishes");
-  var loading = document.getElementById("wishes-loading");
   var list = document.getElementById("wishes-list");
 
-  // Show the section (with its loading state) while we fetch.
-  section.classList.remove("hidden");
+  // Drop pending wishes once they appear in the sheet (or after a day, as a safety net).
+  var dayAgo = Date.now() - 24 * 60 * 60 * 1000;
+  pendingWishes = pendingWishes.filter(function (p) {
+    return p.at > dayAgo && !wishesFeed.some(function (w) { return sameWish(w, p); });
+  });
+  savePending();
 
-  // Cache-bust — Google serves published CSVs with a long cache.
+  var wishes = pendingWishes.slice().reverse().concat(wishesFeed).slice(0, WISHES_MAX);
+  if (!wishes.length) return;
+
+  var frag = document.createDocumentFragment();
+  wishes.forEach(function (w) {
+    var card = document.createElement("div");
+    card.className = "wish-card";
+
+    var body = document.createElement("p");
+    body.className = "wish-text";
+    body.textContent = w.wish;                    // textContent — no HTML from guests
+    card.appendChild(body);
+
+    if (w.name) {
+      var who = document.createElement("div");
+      who.className = "wish-name";
+      who.textContent = w.name;
+      card.appendChild(who);
+    }
+    frag.appendChild(card);
+  });
+
+  list.textContent = "";
+  list.appendChild(frag);
+  document.getElementById("wishes-loading").classList.add("hidden");
+  section.classList.remove("hidden");
+}
+
+function fetchWishes() {
+  // Cache-bust so the browser doesn't reuse an older copy.
   var url = WISHES_CSV + (WISHES_CSV.indexOf("?") === -1 ? "?" : "&") + "t=" + Date.now();
 
-  fetch(url)
+  return fetch(url, { cache: "no-store" })
     .then(function (res) {
       if (!res.ok) throw new Error("HTTP " + res.status);
       return res.text();
     })
     .then(function (text) {
       var rows = parseCSV(text);
-      if (rows.length < 2) { section.classList.add("hidden"); return; }
+      if (rows.length < 2) { wishesFeed = []; renderWishes(); return; }
 
       var header = rows.shift().map(function (h) { return String(h).trim().toLowerCase(); });
       var nameIdx = header.indexOf(WISHES_NAME_HEADER);
@@ -176,46 +237,44 @@ function initWishes() {
       if (nameIdx === -1) nameIdx = WISHES_NAME_FALLBACK;
       if (textIdx === -1) textIdx = WISHES_TEXT_FALLBACK;
 
-      var wishes = [];
+      var feed = [];
       for (var i = 0; i < rows.length; i++) {
         var wish = (rows[i][textIdx] || "").trim();
         if (!wish) continue;                          // skip empty / whitespace-only
-        wishes.push({ wish: wish, name: (rows[i][nameIdx] || "").trim() });
+        feed.push({ wish: wish, name: (rows[i][nameIdx] || "").trim() });
       }
 
-      if (!wishes.length) { section.classList.add("hidden"); return; }
-
       // Form responses are appended in submission order, so newest is last.
-      wishes.reverse();
-      wishes = wishes.slice(0, WISHES_MAX);
-
-      var frag = document.createDocumentFragment();
-      wishes.forEach(function (w) {
-        var card = document.createElement("div");
-        card.className = "wish-card";
-
-        var body = document.createElement("p");
-        body.className = "wish-text";
-        body.textContent = w.wish;                    // textContent — no HTML from guests
-        card.appendChild(body);
-
-        if (w.name) {
-          var who = document.createElement("div");
-          who.className = "wish-name";
-          who.textContent = w.name;
-          card.appendChild(who);
-        }
-        frag.appendChild(card);
-      });
-
-      list.textContent = "";
-      list.appendChild(frag);
-      loading.classList.add("hidden");
-    })
-    .catch(function () {
-      // Decorative section — fail silently.
-      section.classList.add("hidden");
+      wishesFeed = feed.reverse();
+      renderWishes();
     });
+}
+
+function initWishes() {
+  if (!WISHES_CSV) return;
+
+  var section = document.getElementById("wishes");
+  var hasShown = false;
+
+  // Show the section (with its loading state) while the first fetch runs.
+  section.classList.remove("hidden");
+  renderWishes();
+
+  function refresh() {
+    fetchWishes()
+      .then(function () {
+        hasShown = true;
+        if (!wishesFeed.length && !pendingWishes.length) section.classList.add("hidden");
+      })
+      .catch(function () {
+        // Decorative section — fail silently, but keep whatever is already showing.
+        if (!hasShown && !pendingWishes.length) section.classList.add("hidden");
+      });
+  }
+
+  refresh();
+  setInterval(function () { if (!document.hidden) refresh(); }, WISHES_POLL_MS);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) refresh(); });
 }
 
 // Scroll-reveal
