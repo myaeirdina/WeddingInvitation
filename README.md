@@ -1,4 +1,4 @@
-# Nadirah & Ibrahim — Wedding Invitation
+# Ibrahim & Nadirah — Wedding Invitation
 
 A single-page digital wedding invitation. Plain HTML, CSS, and JavaScript — no
 build step, no framework, no backend.
@@ -10,11 +10,12 @@ build step, no framework, no backend.
 ```
 index.html      markup
 styles.css      all styling
-script.js       language toggle (EN/BM), countdown, schedule, RSVP form, scroll reveal
+script.js       countdown, schedule, RSVP form, scroll reveal
 assets/
   hydrangea-top.png       hero flourish
   hydrangea-bottom.png    footer flourish
   cake-detail.png         cameo photo
+  couple.jpg              couple portrait
 ```
 
 ## View it locally
@@ -75,7 +76,8 @@ HTTPS** checked.
 | What | Where |
 | --- | --- |
 | Names, date, venue address, map links | `index.html` |
-| All translated text + the schedule | `COPY` object in `script.js` |
+| All text | `index.html` |
+| Schedule | `SCHEDULE` in `script.js` |
 | Countdown target date/time | `TARGET` in `script.js` |
 | Colours, fonts, spacing | `:root` variables at the top of `styles.css` |
 
