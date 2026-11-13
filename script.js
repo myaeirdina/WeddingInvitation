@@ -3,11 +3,11 @@
 
 // Rows without a time follow on from the previous item (s/s).
 var SCHEDULE = [
-  { time: "7:00", title: "Ketibaan tetamu", en: "Guest arrival" },
-  { time: "~8:00", title: "Perarakan pengantin", en: "Bridal procession" },
-  { time: "~8:30", title: "Bacaan doa", en: "Prayer recitation" },
-  { time: "~9:30", title: "Sesi bergambar", en: "Photo session" },
-  { time: "~11:00", title: "Majlis bersurai", en: "Event ends" }
+  { time: "7:00", title: "Ketibaan tetamu" },
+  { time: "~8:00", title: "Perarakan pengantin" },
+  { time: "~8:30", title: "Bacaan doa" },
+  { time: "~9:30", title: "Sesi bergambar" },
+  { time: "~11:00", title: "Majlis bersurai" }
 ];
 
 // Wedding date & time — 5 December 2026, 7:00 PM, Malaysia time (UTC+8).
@@ -34,8 +34,7 @@ function renderSchedule() {
     var r = rows[i];
     html += '<div class="sched-row' + (r.time ? '' : ' sched-follow') + '">'
       + '<div class="sched-time">' + (r.time || '<span class="sched-dot"></span>') + '</div>'
-      + '<div><div class="sched-name">' + r.title
-      + (r.en ? '<span class="en" lang="en">' + r.en + '</span>' : '') + '</div>'
+      + '<div><div class="sched-name">' + r.title + '</div>'
       + (r.note ? '<div class="sched-note">' + r.note + '</div>' : '')
       + '</div></div>';
   }
