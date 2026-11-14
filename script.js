@@ -30,7 +30,7 @@ var WISHES_NAME_FALLBACK = 1;
 var WISHES_TEXT_FALLBACK = 4;
 
 var WISHES_MAX = 50;
-var WISHES_PER_PAGE = 5;
+var WISHES_PER_PAGE = 3;
 
 // Google Form the RSVP writes to (responses, including wishes, land in its sheet).
 // entry.* IDs come from the form's FB_PUBLIC_LOAD_DATA_.
