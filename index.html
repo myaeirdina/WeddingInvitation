@@ -112,10 +112,6 @@
           <div class="diamond"></div>
           <div class="thanks-title">Terima kasih</div>
           <p class="thanks-body">Jawapan anda telah diterima. Kami menantikan kehadiran anda.</p>
-          <div id="thanks-wish" class="wish-card hidden">
-            <p class="wish-text" id="thanks-wish-text"></p>
-            <div class="wish-name" id="thanks-wish-name"></div>
-          </div>
         </div>
       </div>
 
@@ -148,6 +144,16 @@
 
         <button type="submit" class="submit" id="f-submit" disabled>Hantar jawapan</button>
       </form>
+    </section>
+
+    <!-- WISHES (read from the RSVP Google Sheet; hidden until something loads) -->
+    <section class="wishes hidden" id="wishes" data-reveal>
+      <div class="wishes-head">
+        <div class="eyebrow">Daripada yang tersayang</div>
+        <div class="wishes-title">Ucapan untuk kami</div>
+      </div>
+      <div class="wishes-loading" id="wishes-loading">Mengumpul ucapan&hellip;</div>
+      <div class="wishes-list" id="wishes-list"></div>
     </section>
 
     <!-- FOOTER -->
