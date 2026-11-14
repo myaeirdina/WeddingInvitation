@@ -18,7 +18,8 @@ var TARGET = new Date("2026-12-05T19:00:00+08:00").getTime();
 // part of its URL, docs.google.com/spreadsheets/d/<ID>/edit — and share the
 // sheet as "Anyone with the link: Viewer". New wishes then show within ~30s.
 // Fallback: the "Publish to web" CSV, which Google only refreshes every ~5 min.
-var WISHES_SHEET_ID = "";
+var WISHES_SHEET_ID = "1WB5FZbZHlrmUUOVz2RyQUm5j7Pl5b5IhObKCZdyF060";
+var WISHES_SHEET_GID = "1944749942";   // the "Form responses" tab
 var WISHES_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaBgiPn82Y_laejF0Q01LrDsZL5yS5b2Uz7G5nFfIE0sjFGvBs2Vgrnd5hV5Ex4KVOlO6m_aoXlWBl/pub?output=csv";
 
 // Column headers in the sheet (case-insensitive match; falls back to
@@ -222,7 +223,7 @@ function renderWishes() {
 
 function wishesSource() {
   if (WISHES_SHEET_ID) {
-    return "https://docs.google.com/spreadsheets/d/" + WISHES_SHEET_ID + "/gviz/tq?tqx=out:csv";
+    return "https://docs.google.com/spreadsheets/d/" + WISHES_SHEET_ID + "/gviz/tq?tqx=out:csv&gid=" + WISHES_SHEET_GID;
   }
   return WISHES_CSV;
 }
