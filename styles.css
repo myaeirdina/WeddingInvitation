@@ -126,7 +126,16 @@ section { position: relative; }
 .wishes-head { text-align: center; margin-bottom: 24px; }
 .wishes-title { font-family: 'Pinyon Script', cursive; font-size: 36px; color: var(--navy); margin-top: 6px; }
 .wishes-loading { text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; color: var(--sage); padding: 8px 0 4px; }
-.wishes-list { display: flex; flex-direction: column; gap: 14px; }
+/* Wishes carousel: pages of 5, swipe or use the arrows */
+.wishes-list { display: flex; align-items: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; transition: height .35s ease; }
+.wishes-list::-webkit-scrollbar { display: none; }
+.wishes-page { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; display: flex; flex-direction: column; gap: 14px; }
+.wishes-nav { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 20px; }
+.wishes-nav.hidden { display: none; }
+.wishes-arrow { width: 40px; height: 40px; border: 1px solid var(--line-warm); background: transparent; color: var(--navy); font-family: 'Cormorant Garamond', serif; font-size: 26px; line-height: 1; cursor: pointer; transition: background .25s, border-color .25s, opacity .25s; }
+.wishes-arrow:hover:not(:disabled) { border-color: var(--navy); }
+.wishes-arrow:disabled { opacity: .3; cursor: default; }
+.wishes-count { min-width: 64px; text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 17px; letter-spacing: .08em; color: var(--label); }
 .wish-card { border: 1px solid var(--line-warm); background: var(--panel-blue); padding: 20px 22px; }
 .wish-text { font-family: 'Cormorant Garamond', serif; font-size: 16.5px; line-height: 1.7; color: var(--navy); text-wrap: pretty; white-space: pre-line; }
 .wish-name { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--label); margin-top: 12px; }

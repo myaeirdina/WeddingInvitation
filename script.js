@@ -29,7 +29,8 @@ var WISHES_TEXT_HEADER = "a wish for us";
 var WISHES_NAME_FALLBACK = 1;
 var WISHES_TEXT_FALLBACK = 4;
 
-var WISHES_MAX = 30;
+var WISHES_MAX = 50;
+var WISHES_PER_PAGE = 5;
 
 // Google Form the RSVP writes to (responses, including wishes, land in its sheet).
 // entry.* IDs come from the form's FB_PUBLIC_LOAD_DATA_.
@@ -197,7 +198,13 @@ function renderWishes() {
   if (!wishes.length) return;
 
   var frag = document.createDocumentFragment();
-  wishes.forEach(function (w) {
+  var page = null;
+  wishes.forEach(function (w, i) {
+    if (i % WISHES_PER_PAGE === 0) {
+      page = document.createElement("div");
+      page.className = "wishes-page";
+      frag.appendChild(page);
+    }
     var card = document.createElement("div");
     card.className = "wish-card";
 
@@ -212,14 +219,59 @@ function renderWishes() {
       who.textContent = w.name;
       card.appendChild(who);
     }
-    frag.appendChild(card);
+    page.appendChild(card);
   });
 
+  // Re-rendering (every poll) keeps the guest on the page they were reading.
+  var keep = wishesPage;
   list.textContent = "";
   list.appendChild(frag);
   document.getElementById("wishes-loading").classList.add("hidden");
   section.classList.remove("hidden");
+  goToWishesPage(Math.min(keep, list.children.length - 1), false);
 }
+
+/* ---- Wishes carousel ---- */
+var wishesPage = 0;
+
+function goToWishesPage(n, smooth) {
+  var list = document.getElementById("wishes-list");
+  var pages = list.children.length;
+  if (!pages) return;
+  wishesPage = Math.max(0, Math.min(n, pages - 1));
+  list.scrollTo({ left: wishesPage * list.clientWidth, behavior: smooth ? "smooth" : "auto" });
+  updateWishesNav();
+}
+
+function updateWishesNav() {
+  var list = document.getElementById("wishes-list");
+  var pages = list.children.length;
+  var nav = document.getElementById("wishes-nav");
+  nav.classList.toggle("hidden", pages < 2);
+  document.getElementById("wishes-count").textContent = (wishesPage + 1) + " / " + pages;
+  document.getElementById("wishes-prev").disabled = wishesPage === 0;
+  document.getElementById("wishes-next").disabled = wishesPage >= pages - 1;
+  // Fit the track to the page being shown, so a short last page leaves no gap.
+  var current = list.children[wishesPage];
+  if (current) list.style.height = current.offsetHeight + "px";
+}
+
+(function initWishesCarousel() {
+  var list = document.getElementById("wishes-list");
+  var timer = null;
+  document.getElementById("wishes-prev").addEventListener("click", function () { goToWishesPage(wishesPage - 1, true); });
+  document.getElementById("wishes-next").addEventListener("click", function () { goToWishesPage(wishesPage + 1, true); });
+  // Swiping: work out which page we landed on once scrolling settles.
+  list.addEventListener("scroll", function () {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      if (!list.clientWidth) return;
+      var n = Math.round(list.scrollLeft / list.clientWidth);
+      if (n !== wishesPage) { wishesPage = n; updateWishesNav(); }
+    }, 90);
+  });
+  window.addEventListener("resize", function () { goToWishesPage(wishesPage, false); });
+})();
 
 function wishesSource() {
   if (WISHES_SHEET_ID) {
