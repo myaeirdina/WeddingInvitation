@@ -94,6 +94,7 @@ section { position: relative; }
 .venue .rule { margin: 18px 0; }
 .venue .rule .bar { width: 40px; }
 .venue-addr { font-size: 13px; line-height: 1.85; color: #5a6a85; margin: 0 auto; max-width: 300px; text-wrap: pretty; }
+.venue-note { margin: 14px auto 0; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: var(--navy); }
 .venue-actions { display: flex; flex-direction: column; gap: 9px; margin-top: 24px; }
 .btn-solid { display: block; background: var(--navy); color: #f6f8fc; padding: 15px; font-family: 'Cormorant Garamond', serif; font-size: 18px; letter-spacing: .08em; transition: background .25s; }
 .btn-solid:hover { background: var(--navy-deep); color: #f6f8fc; }
@@ -121,6 +122,10 @@ section { position: relative; }
 .thanks .diamond { width: 8px; height: 8px; background: var(--sage); transform: rotate(45deg); margin: 0 auto 16px; }
 .thanks-title { font-family: 'Pinyon Script', cursive; font-size: 32px; color: var(--navy); }
 .thanks-body { font-size: 13px; color: #5a6a85; margin: 10px 0 0; line-height: 1.7; }
+.thanks .wish-card { margin-top: 22px; text-align: center; }
+.wish-card { border: 1px solid var(--line-warm); background: var(--card); padding: 20px 22px; }
+.wish-text { font-family: 'Cormorant Garamond', serif; font-size: 16.5px; line-height: 1.7; color: var(--navy); text-wrap: pretty; white-space: pre-line; }
+.wish-name { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--label); margin-top: 12px; }
 .hidden { display: none; }
 
 

@@ -89,7 +89,16 @@ document.getElementById("rsvp-form").addEventListener("submit", function (e) {
 
   submit.disabled = true;
 
+  var guestName = document.getElementById("f-name").value.trim();
+  var guestWish = document.getElementById("f-wish").value.trim();
+
   function done() {
+    // Show the guest's own wish back to them in the thank-you card.
+    if (guestWish) {
+      document.getElementById("thanks-wish-text").textContent = guestWish;   // textContent — no HTML
+      document.getElementById("thanks-wish-name").textContent = guestName;
+      document.getElementById("thanks-wish").classList.remove("hidden");
+    }
     document.getElementById("rsvp-form").classList.add("hidden");
     document.getElementById("rsvp-thanks").classList.remove("hidden");
   }
